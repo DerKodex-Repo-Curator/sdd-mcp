@@ -11,7 +11,7 @@ describe('addPreconditions', () => {
     argumentHint: '<arg>',
   }
 
-  it('プロンプト冒頭に前提条件セクションを挿入する', () => {
+  it('inserts preconditions at the top of the prompt', () => {
     const prompt = 'This is the original prompt content.'
 
     const result = addPreconditions(prompt, mockMetadata)
@@ -23,7 +23,7 @@ describe('addPreconditions', () => {
     expect(result).toContain('This is the original prompt content.')
   })
 
-  it('元のプロンプトが前提条件の後に配置される', () => {
+  it('places original prompt after preconditions', () => {
     const prompt = 'Original content here.'
 
     const result = addPreconditions(prompt, mockMetadata)
@@ -34,7 +34,7 @@ describe('addPreconditions', () => {
     expect(preconditionIndex).toBeLessThan(originalContentIndex)
   })
 
-  it('セパレーターが前提条件とプロンプトの間に挿入される', () => {
+  it('inserts separator between preconditions and prompt', () => {
     const prompt = 'Content'
 
     const result = addPreconditions(prompt, mockMetadata)
@@ -47,7 +47,7 @@ describe('addPreconditions', () => {
 })
 
 describe('checkPromptSize', () => {
-  it('プロンプトサイズが上限以下の場合undefinedを返す', () => {
+  it('returns undefined when prompt size is within limit', () => {
     const shortPrompt = 'This is a short prompt.'
 
     const result = checkPromptSize(shortPrompt)
@@ -55,7 +55,7 @@ describe('checkPromptSize', () => {
     expect(result).toBeUndefined()
   })
 
-  it('プロンプトサイズが上限を超える場合警告メッセージを返す', () => {
+  it('returns warning when prompt size exceeds limit', () => {
     // Generate a string larger than 50KB.
     const largePrompt = 'a'.repeat(51000)
 
@@ -66,7 +66,7 @@ describe('checkPromptSize', () => {
     expect(result).toContain('50000')
   })
 
-  it('警告メッセージに実際のサイズと上限を含む', () => {
+  it('warning message includes actual size and limit', () => {
     const largePrompt = 'a'.repeat(55000)
 
     const result = checkPromptSize(largePrompt)
@@ -74,7 +74,7 @@ describe('checkPromptSize', () => {
     expect(result).toMatch(/\d+ > 50000/)
   })
 
-  it('マルチバイト文字を含む場合もバイト数で計算する', () => {
+  it('calculates byte size even with multibyte characters', () => {
     // Create a string with many Japanese characters (1 char = 3 bytes).
     const japanesePrompt = 'あ'.repeat(20000) // approx 60KB
 

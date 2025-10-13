@@ -4,7 +4,7 @@ Spec-Driven Development MCP Server - An MCP server that provides spec-driven dev
 
 ## Features
 
-- **Specification Management**: Consistent workflow from spec initialization to requirements definition, design, and task breakdown
+- **Specification Management**: Consistent workflow from spec initialization to requirements definition, design, task breakdown, and feedback integration
 - **TDD Implementation Support**: High-quality implementation support with test-first development
 - **Design Validation**: Interactive design review and quality checks
 - **Progress Tracking**: Spec status monitoring and implementation gap visualization
@@ -52,6 +52,7 @@ This server provides the following spec-driven development tools:
 - **spec-tasks**: Execute task breakdown
 - **spec-impl**: Execute implementation with TDD approach
 - **spec-status**: Check specification status
+- **spec-feedback**: Capture development feedback, generate JSON/Markdown reports, and apply updates to requirements/design/tasks
 
 ### Steering Documents
 - **steering**: Update steering documents
@@ -162,6 +163,24 @@ Parameters: user-authentication
 ```
 
 View current phase, approval status, and implementation progress.
+
+#### 8. Record and Apply Feedback (Any Time)
+
+```
+Use MCP tool: spec-feedback
+Parameters: {"feature_name":"user-authentication","mode":"report"}
+```
+
+This produces a JSON report and Markdown summary describing the feedback items that need to be reflected in the specification set.
+
+After the report is reviewed, apply the changes directly to the spec documents:
+
+```
+Use MCP tool: spec-feedback
+Parameters: {"feature_name":"user-authentication","mode":"apply","report_path":"feedback/20251013-120000-user-authentication-feedback.json"}
+```
+
+The apply prompt guides you to update `requirements.md`, `design.md`, `tasks.md`, and `spec.json` so the official documentation stays in sync with the agreed feedback.
 
 #### Optional: Validation Tools
 

@@ -15,7 +15,7 @@ describe('loadTemplate', () => {
     await rm(TEST_TEMPLATE_DIR, { recursive: true, force: true })
   })
 
-  it('有効なテンプレートファイルを読み込める', async () => {
+  it('loads a valid template file', async () => {
     const templateContent = `---
 description: Test template
 allowed-tools: Bash, Read, Write
@@ -39,11 +39,11 @@ This is a test {{parameter}}`
     expect(result.body).toContain('This is a test {{parameter}}')
   })
 
-  it('存在しないファイルでエラーをスローする', async () => {
+  it('throws an error when the file is missing', async () => {
     await expect(loadTemplate('non-existent', TEST_TEMPLATE_DIR)).rejects.toThrow('Template not found: non-existent')
   })
 
-  it('不正な形式のファイルでエラーをスローする', async () => {
+  it('throws an error when frontmatter format is invalid', async () => {
     const invalidContent = '# Just markdown without frontmatter'
 
     await writeFile(`${TEST_TEMPLATE_DIR}/invalid.md`, invalidContent)
@@ -51,7 +51,7 @@ This is a test {{parameter}}`
     await expect(loadTemplate('invalid', TEST_TEMPLATE_DIR)).rejects.toThrow('Invalid template frontmatter')
   })
 
-  it('メタデータをハイフン付きキーからキャメルケースに変換する', async () => {
+  it('converts hyphenated metadata keys to camelCase', async () => {
     const templateContent = `---
 description: Test
 allowed-tools: Read
@@ -69,7 +69,7 @@ Body`
     expect(result.metadata.argumentHint).toBeDefined()
   })
 
-  it('allowed-toolsをカンマ区切りでパースして配列に変換する', async () => {
+  it('parses allowed-tools as a comma-separated list', async () => {
     const templateContent = `---
 description: Test
 allowed-tools: Bash, Read, Write, Glob, Grep
@@ -85,7 +85,7 @@ Body`
     expect(result.metadata.allowedTools).toEqual(['Bash', 'Read', 'Write', 'Glob', 'Grep'])
   })
 
-  it('argument-hintフィールドがなくても読み込める', async () => {
+  it('handles missing argument-hint field gracefully', async () => {
     const templateContent = `---
 description: Test
 allowed-tools: Read
@@ -100,7 +100,7 @@ Body`
     expect(result.metadata.argumentHint).toBe('')
   })
 
-  it('versionフィールドが未指定の場合デフォルト値を使用する', async () => {
+  it('defaults version when the field is omitted', async () => {
     const templateContent = `---
 description: Test
 allowed-tools: Read

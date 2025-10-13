@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { parseFrontmatter } from './template-parser.js'
 
 describe('parseFrontmatter', () => {
-  it('正常なfrontmatterをパースできる', () => {
+  it('parses valid frontmatter', () => {
     const content = `---
 description: Test template
 allowed-tools: Bash, Read, Write
@@ -22,7 +22,7 @@ Test content here`
     expect(result.body).toBe('\n# Template body\nTest content here')
   })
 
-  it('versionフィールド未指定時にデフォルト値"1.0.0"を使用する', () => {
+  it('defaults version to "1.0.0" when missing', () => {
     const content = `---
 description: Test template
 allowed-tools: Bash, Read, Write
@@ -36,7 +36,7 @@ argument-hint: <test>
     expect(result.metadata.version).toBe('1.0.0')
   })
 
-  it('未知のキーを保持する', () => {
+  it('preserves unknown keys', () => {
     const content = `---
 description: Test template
 allowed-tools: Bash, Read, Write
@@ -53,13 +53,13 @@ another-field: another value
     expect(result.metadata['another-field']).toBe('another value')
   })
 
-  it('無効な形式のfrontmatterでエラーをスローする', () => {
+  it('throws on invalid frontmatter syntax', () => {
     const invalidContent = '# Just markdown\nNo frontmatter here'
 
     expect(() => parseFrontmatter(invalidContent)).toThrow('Invalid frontmatter format')
   })
 
-  it('frontmatterとbodyを正しく分離する', () => {
+  it('separates frontmatter from body correctly', () => {
     const content = `---
 description: Test
 allowed-tools: Read
@@ -76,7 +76,7 @@ Body line 3`
     expect(result.metadata.description).toBe('Test')
   })
 
-  it('値にコロンが含まれる場合も正しくパースする', () => {
+  it('parses values containing colons', () => {
     const content = `---
 description: Test: with colon
 allowed-tools: Bash, Read

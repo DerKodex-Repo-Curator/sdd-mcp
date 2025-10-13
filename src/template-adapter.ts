@@ -87,13 +87,13 @@ export const adaptTemplateForMCP = (content: string, templateId = ''): string =>
 
   // 2. Convert /kiro:xxx syntax into MCP tool invocations.
   // Convert the Run `/kiro:xxx` pattern while keeping the leading Run.
-  adapted = adapted.replace(/Run `\/kiro:([a-z-]+)([^`]*)`/g, 'Run $1 ツールを実行$2')
+  adapted = adapted.replace(/Run `\/kiro:([a-z-]+)([^`]*)`/g, 'Run $1 tool$2')
 
   // Convert the `/kiro:xxx` pattern when it is wrapped in backticks.
-  adapted = adapted.replace(/`\/kiro:([a-z-]+)([^`]*)`/g, '`$1 ツール$2`')
+  adapted = adapted.replace(/`\/kiro:([a-z-]+)([^`]*)`/g, '`$1 tool$2`')
 
   // Convert the /kiro:xxx pattern when backticks are not used.
-  adapted = adapted.replace(/\/kiro:([a-z-]+)/g, '$1 ツール')
+  adapted = adapted.replace(/\/kiro:([a-z-]+)/g, '$1 tool')
 
   return adapted
 }

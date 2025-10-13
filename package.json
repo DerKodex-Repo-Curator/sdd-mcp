@@ -17,7 +17,7 @@
     "bun": ">=1.0.0"
   },
   "scripts": {
-    "dev": "concurrently \"tsdown --watch\" \"bun --watch dist/cli.js\"",
+    "dev": "tsdown --watch",
     "build": "tsdown",
     "start": "bun dist/cli.js",
     "test": "vitest run",
@@ -37,7 +37,6 @@
     "@biomejs/biome": "^1.9.4",
     "@types/bun": "^1.1.14",
     "@vitest/coverage-istanbul": "^2.1.8",
-    "concurrently": "^9.1.2",
     "tsdown": "^0.15.6",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3",

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { convertLegacyPlaceholders, renderTemplate } from './template-renderer.js'
 
 describe('renderTemplate', () => {
-  it('単純なプレースホルダを置換できる', () => {
+  it('replaces a single placeholder', () => {
     const template = 'Hello {{name}}!'
     const params = { name: 'World' }
 
@@ -11,7 +11,7 @@ describe('renderTemplate', () => {
     expect(result).toBe('Hello World!')
   })
 
-  it('複数のプレースホルダを置換できる', () => {
+  it('replaces multiple placeholders', () => {
     const template = '{{greeting}} {{name}}, welcome to {{place}}!'
     const params = {
       greeting: 'Hello',
@@ -24,7 +24,7 @@ describe('renderTemplate', () => {
     expect(result).toBe('Hello Alice, welcome to Wonderland!')
   })
 
-  it('配列パラメータをカンマ区切りに変換する', () => {
+  it('formats array parameters as comma-separated text', () => {
     const template = 'Tools: {{tools}}'
     const params = {
       tools: ['Bash', 'Read', 'Write'],
@@ -35,7 +35,7 @@ describe('renderTemplate', () => {
     expect(result).toBe('Tools: Bash, Read, Write')
   })
 
-  it('boolean型パラメータを文字列化する', () => {
+  it('stringifies boolean parameters', () => {
     const template = 'Enabled: {{enabled}}'
     const params = {
       enabled: true,
@@ -46,7 +46,7 @@ describe('renderTemplate', () => {
     expect(result).toBe('Enabled: true')
   })
 
-  it('number型パラメータを文字列化する', () => {
+  it('stringifies number parameters', () => {
     const template = 'Count: {{count}}'
     const params = {
       count: 42,
@@ -57,14 +57,14 @@ describe('renderTemplate', () => {
     expect(result).toBe('Count: 42')
   })
 
-  it('必須パラメータが欠落している場合エラーをスローする', () => {
+  it('throws when a required parameter is missing', () => {
     const template = 'Hello {{name}}!'
     const params = {}
 
     expect(() => renderTemplate(template, params)).toThrow('Missing required parameter: name')
   })
 
-  it('同一プレースホルダが複数回出現する場合も正しく置換する', () => {
+  it('replaces repeated placeholders consistently', () => {
     const template = '{{name}} says: "Hello, I am {{name}}"'
     const params = { name: 'Bob' }
 
@@ -75,7 +75,7 @@ describe('renderTemplate', () => {
 })
 
 describe('convertLegacyPlaceholders', () => {
-  it('$ARGUMENTSを名前付きプレースホルダに変換する', () => {
+  it('converts $ARGUMENTS to {{project_description}}', () => {
     const template = 'Initialize with: $ARGUMENTS'
     const mapping = { $ARGUMENTS: 'project_description' }
 
@@ -84,7 +84,7 @@ describe('convertLegacyPlaceholders', () => {
     expect(result).toBe('Initialize with: {{project_description}}')
   })
 
-  it('$1を名前付きプレースホルダに変換する', () => {
+  it('converts $1 to a named placeholder', () => {
     const template = 'Feature: $1'
     const mapping = { $1: 'feature_name' }
 
@@ -93,7 +93,7 @@ describe('convertLegacyPlaceholders', () => {
     expect(result).toBe('Feature: {{feature_name}}')
   })
 
-  it('$2を名前付きプレースホルダに変換する', () => {
+  it('converts $2 to a named placeholder', () => {
     const template = 'Tasks: $2'
     const mapping = { $2: 'task_numbers' }
 
@@ -102,7 +102,7 @@ describe('convertLegacyPlaceholders', () => {
     expect(result).toBe('Tasks: {{task_numbers}}')
   })
 
-  it('複数の位置引数を一度に変換する', () => {
+  it('converts multiple positional placeholders at once', () => {
     const template = 'Init: $ARGUMENTS, Feature: $1, Tasks: $2'
     const mapping = {
       $ARGUMENTS: 'project_description',
@@ -115,7 +115,7 @@ describe('convertLegacyPlaceholders', () => {
     expect(result).toBe('Init: {{project_description}}, Feature: {{feature_name}}, Tasks: {{task_numbers}}')
   })
 
-  it('$1の後に数字がある場合は変換しない（$10等）', () => {
+  it('leaves multi-digit placeholders such as $10 untouched', () => {
     const template = 'Feature: $1, but not $10'
     const mapping = { $1: 'feature_name' }
 

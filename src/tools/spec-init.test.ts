@@ -27,7 +27,7 @@ Project: {{project_description}}`
     await rm(TEST_TEMPLATE_DIR, { recursive: true, force: true })
   })
 
-  it('正常な入力でプロンプトを生成できる', async () => {
+  it('generates prompt with valid input', async () => {
     const input = {
       project_description: 'Build a new MCP server',
     }
@@ -41,7 +41,7 @@ Project: {{project_description}}`
     expect(result.metadata.parameters).toEqual(input)
   })
 
-  it('前提条件セクションが挿入されている', async () => {
+  it('inserts precondition section', async () => {
     const input = {
       project_description: 'Test project',
     }
@@ -54,7 +54,7 @@ Project: {{project_description}}`
     expect(result.content).toContain('Allowed tools: Bash, Read, Write')
   })
 
-  it('必須パラメータが欠落している場合エラーをスローする', async () => {
+  it('throws when required parameter is missing', async () => {
     const input: Partial<SpecInitInput> = {
       // project_description is missing.
     }
@@ -64,7 +64,7 @@ Project: {{project_description}}`
     )
   })
 
-  it('空文字列のパラメータでエラーをスローする', async () => {
+  it('throws when parameter is empty string', async () => {
     const input = {
       project_description: '',
     }
@@ -74,7 +74,7 @@ Project: {{project_description}}`
     )
   })
 
-  it('プロンプトサイズが上限を超える場合警告を含む', async () => {
+  it('includes warning when prompt size exceeds limit', async () => {
     const input = {
       project_description: 'a'.repeat(50000),
     }

@@ -77,6 +77,39 @@ export type SpecImplInput = {
 }
 
 /**
+ * Feedback item update descriptor for spec-feedback.
+ */
+export type SpecFeedbackItemUpdates = {
+  requirements?: string[]
+  design?: string[]
+  tasks?: string[]
+}
+
+/**
+ * Feedback item definition for spec-feedback.
+ */
+export type SpecFeedbackItem = {
+  id?: string
+  title: string
+  severity?: 'blocker' | 'major' | 'minor' | 'info'
+  impact?: string
+  recommendation?: string
+  targets: ('requirements' | 'design' | 'tasks')[]
+  updates?: SpecFeedbackItemUpdates
+}
+
+/**
+ * Input type for the spec-feedback tool.
+ */
+export type SpecFeedbackInput = {
+  feature_name: string
+  mode?: 'report' | 'apply'
+  feedback?: SpecFeedbackItem[]
+  report_path?: string
+  dry_run?: boolean
+}
+
+/**
  * Input type for the steering tool (no parameters).
  */
 export type SteeringInput = Record<string, never>

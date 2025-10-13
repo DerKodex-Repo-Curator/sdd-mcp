@@ -7,6 +7,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js'
 import type {
   SpecDesignInput,
+  SpecFeedbackInput,
   SpecImplInput,
   SpecInitInput,
   SpecRequirementsInput,
@@ -18,6 +19,7 @@ import type {
   ValidateGapInput,
 } from './mcp-tools-types.js'
 import { handleSpecDesign } from './tools/spec-design.js'
+import { handleSpecFeedback } from './tools/spec-feedback.js'
 import { handleSpecImpl } from './tools/spec-impl.js'
 import { handleSpecInit } from './tools/spec-init.js'
 import { handleSpecRequirements } from './tools/spec-requirements.js'
@@ -41,7 +43,7 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         project_description: {
           type: 'string',
-          description: 'プロジェクトの詳細な説明',
+          description: 'Detailed project description',
         },
       },
       required: ['project_description'],
@@ -56,7 +58,7 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
       },
       required: ['feature_name'],
@@ -71,11 +73,11 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
         auto_approve: {
           type: 'boolean',
-          description: '自動承認フラグ',
+          description: 'Auto-approve flag',
         },
       },
       required: ['feature_name'],
@@ -90,11 +92,11 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
         auto_approve: {
           type: 'boolean',
-          description: '自動承認フラグ',
+          description: 'Auto-approve flag',
         },
       },
       required: ['feature_name'],
@@ -109,14 +111,14 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
         task_numbers: {
           type: 'array',
           items: {
             type: 'string',
           },
-          description: 'タスク番号配列（省略時は全タスク）',
+          description: 'Task number list (defaults to all pending tasks)',
         },
       },
       required: ['feature_name'],
@@ -131,7 +133,68 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
+        },
+      },
+      required: ['feature_name'],
+    },
+  },
+  {
+    name: 'spec-feedback',
+    description:
+      'Generates feedback reports and applies updates to requirements/design/tasks based on development discussions.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        feature_name: {
+          type: 'string',
+          description: 'Feature name',
+        },
+        mode: {
+          type: 'string',
+          description: 'report or apply (default: report)',
+          enum: ['report', 'apply'],
+        },
+        feedback: {
+          type: 'array',
+          description: 'Feedback items used in report mode',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              title: { type: 'string' },
+              severity: {
+                type: 'string',
+                enum: ['blocker', 'major', 'minor', 'info'],
+              },
+              impact: { type: 'string' },
+              recommendation: { type: 'string' },
+              targets: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  enum: ['requirements', 'design', 'tasks'],
+                },
+              },
+              updates: {
+                type: 'object',
+                properties: {
+                  requirements: { type: 'array', items: { type: 'string' } },
+                  design: { type: 'array', items: { type: 'string' } },
+                  tasks: { type: 'array', items: { type: 'string' } },
+                },
+              },
+            },
+            required: ['title', 'targets'],
+          },
+        },
+        report_path: {
+          type: 'string',
+          description: 'Report JSON filename used in apply mode (defaults to latest)',
+        },
+        dry_run: {
+          type: 'boolean',
+          description: 'Preview-only flag for apply mode',
         },
       },
       required: ['feature_name'],
@@ -164,7 +227,7 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
       },
       required: ['feature_name'],
@@ -179,7 +242,7 @@ const TOOL_DEFINITIONS: Tool[] = [
       properties: {
         feature_name: {
           type: 'string',
-          description: 'フィーチャー名',
+          description: 'Feature name',
         },
       },
       required: ['feature_name'],
@@ -203,6 +266,7 @@ const TOOL_HANDLERS: Record<string, (input: unknown) => Promise<unknown>> = {
   'spec-tasks': wrapHandler<SpecTasksInput>(handleSpecTasks),
   'spec-impl': wrapHandler<SpecImplInput>(handleSpecImpl),
   'spec-status': wrapHandler<SpecStatusInput>(handleSpecStatus),
+  'spec-feedback': wrapHandler<SpecFeedbackInput>(handleSpecFeedback),
   steering: wrapHandler<SteeringInput>(handleSteering),
   'steering-custom': wrapHandler<SteeringCustomInput>(handleSteeringCustom),
   'validate-design': wrapHandler<ValidateDesignInput>(handleValidateDesign),
